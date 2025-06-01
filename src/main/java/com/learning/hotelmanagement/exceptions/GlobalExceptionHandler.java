@@ -46,7 +46,7 @@ public class GlobalExceptionHandler {
 	
 	@ExceptionHandler(HttpMessageNotReadableException.class)
 	public ResponseEntity<ApiResponse> httpMessageNotReadableException(HttpMessageNotReadableException ex) {
-		String message = "Please Add Valid Data";
+		String message = "Please Add Proper Request";
 		ApiResponse api = new ApiResponse(message, false);
 		return new ResponseEntity<ApiResponse>(api, HttpStatus.BAD_REQUEST);
 	}
