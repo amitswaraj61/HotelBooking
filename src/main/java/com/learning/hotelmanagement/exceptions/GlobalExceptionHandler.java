@@ -13,7 +13,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import com.learning.hotelmanagement.payloads.ApiResponse;
+import com.learning.hotelmanagement.utils.ErrorResponse;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -23,38 +23,40 @@ public class GlobalExceptionHandler {
 		Map<String, String> response = new LinkedHashMap<>();
 		ex.getBindingResult().getAllErrors().forEach((error) -> {
 			String fieldName = ((FieldError) error).getField();
+			System.out.println(fieldName);
 			String defaultMessage = error.getDefaultMessage();
+			System.out.println(defaultMessage);
 			response.put(fieldName, defaultMessage);
 		});
 		return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
 	}
-	
+
 	@ExceptionHandler(HttpRequestMethodNotSupportedException.class)
 	public ResponseEntity<Map<String, String>> handleMethodNotSupported(HttpRequestMethodNotSupportedException ex) {
-	    Map<String, String> response = new LinkedHashMap<>();
-	    response.put("Message", ex.getMessage());
-	    response.put("Error", "HTTP method not supported");
-	    return new ResponseEntity<>(response, HttpStatus.METHOD_NOT_ALLOWED);
+		Map<String, String> response = new LinkedHashMap<>();
+		response.put("Message", ex.getMessage());
+		response.put("Error", "HTTP method not supported");
+		return new ResponseEntity<>(response, HttpStatus.METHOD_NOT_ALLOWED);
 	}
 
 	@ExceptionHandler(ResourceNotFoundException.class)
-	public ResponseEntity<ApiResponse> resourceNotFoundException(ResourceNotFoundException ex) {
+	public ResponseEntity<ErrorResponse> resourceNotFoundException(ResourceNotFoundException ex) {
 		String message = ex.getMessage();
-		ApiResponse api = new ApiResponse(message, false);
-		return new ResponseEntity<ApiResponse>(api, HttpStatus.NOT_FOUND);
+		ErrorResponse api = new ErrorResponse(message, false, HttpStatus.BAD_REQUEST.value());
+		return new ResponseEntity<ErrorResponse>(api, HttpStatus.NOT_FOUND);
 	}
-	
+
 	@ExceptionHandler(HttpMessageNotReadableException.class)
-	public ResponseEntity<ApiResponse> httpMessageNotReadableException(HttpMessageNotReadableException ex) {
+	public ResponseEntity<ErrorResponse> httpMessageNotReadableException(HttpMessageNotReadableException ex) {
 		String message = "Please Add Proper Request";
-		ApiResponse api = new ApiResponse(message, false);
-		return new ResponseEntity<ApiResponse>(api, HttpStatus.BAD_REQUEST);
+		ErrorResponse api = new ErrorResponse(message, false, HttpStatus.BAD_REQUEST.value());
+		return new ResponseEntity<ErrorResponse>(api, HttpStatus.BAD_REQUEST);
 	}
-	
+
 	@ExceptionHandler(DataIntegrityViolationException.class)
-	public ResponseEntity<ApiResponse> dataIntegrityViolationException(DataIntegrityViolationException ex) {
+	public ResponseEntity<ErrorResponse> dataIntegrityViolationException(DataIntegrityViolationException ex) {
 		String message = "Please insert Unique Data";
-		ApiResponse api = new ApiResponse(message, false);
-		return new ResponseEntity<ApiResponse>(api, HttpStatus.BAD_REQUEST);
+		ErrorResponse api = new ErrorResponse(message, false, HttpStatus.BAD_REQUEST.value());
+		return new ResponseEntity<ErrorResponse>(api, HttpStatus.BAD_REQUEST);
 	}
 }

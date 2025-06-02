@@ -1,7 +1,6 @@
 package com.learning.hotelmanagement.controllers;
 
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,11 +15,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.learning.hotelmanagement.payloads.ApiResponse;
 import com.learning.hotelmanagement.payloads.HotelDto;
 import com.learning.hotelmanagement.services.HotelService;
 import com.learning.hotelmanagement.services.ValidationGroup.CreateGroup;
 import com.learning.hotelmanagement.services.ValidationGroup.UpdateGroup;
+import com.learning.hotelmanagement.utils.CommonUtils;
+import com.learning.hotelmanagement.utils.ErrorResponse;
 
 @RestController
 @RequestMapping("/api/hotel")
@@ -32,17 +32,19 @@ public class HotelController {
 	@PostMapping("/createHotel")
 	public ResponseEntity<?> createHotel(@Validated(CreateGroup.class) @RequestBody HotelDto hotelDto) {
 		HotelDto createdHotelDto = this.hotelService.createHotel(hotelDto);
-		return new ResponseEntity<>(createdHotelDto, HttpStatus.CREATED);
+		return CommonUtils.createBuildResponse(createdHotelDto, "Success", HttpStatus.CREATED);
 	}
 
 	@PutMapping("/updateHotel/{hotelId}")
 	public ResponseEntity<?> updateHotel(@Validated(UpdateGroup.class) @RequestBody HotelDto hotelDto,
 			@PathVariable Integer hotelId) {
 		if (allFieldsNullOrBlank(hotelDto)) {
-			return new ResponseEntity<>("At least one field must be provided for update.", HttpStatus.BAD_REQUEST);
+			String errorMessage = "At least one field must be provided for update.";
+			ErrorResponse error = new ErrorResponse(errorMessage, false, HttpStatus.BAD_REQUEST.value());
+			return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
 		}
-		HotelDto createdHotelDto = this.hotelService.updateHotel(hotelDto, hotelId);
-		return new ResponseEntity<>(createdHotelDto, HttpStatus.CREATED);
+		HotelDto updatedHotelDto = this.hotelService.updateHotel(hotelDto, hotelId);
+		return CommonUtils.createBuildResponse(updatedHotelDto, "Success", HttpStatus.CREATED);
 	}
 
 	private boolean allFieldsNullOrBlank(HotelDto dto) {
@@ -52,20 +54,20 @@ public class HotelController {
 	}
 
 	@GetMapping("/getHotelById/{hotelId}")
-	public ResponseEntity<HotelDto> getHotelById(@PathVariable Integer hotelId) {
+	public ResponseEntity<?> getHotelById(@PathVariable Integer hotelId) {
 		HotelDto hotelById = this.hotelService.getHotelById(hotelId);
-		return new ResponseEntity<>(hotelById, HttpStatus.OK);
+		return CommonUtils.createBuildResponse(hotelById, "Success", HttpStatus.OK);
 	}
 
 	@DeleteMapping("/deleteHotelById/{hotelId}")
-	public ResponseEntity<ApiResponse> deleteById(@PathVariable Integer hotelId) {
+	public ResponseEntity<?> deleteById(@PathVariable Integer hotelId) {
 		this.hotelService.deleteHotel(hotelId);
-		return new ResponseEntity<>(new ApiResponse("Hotel Deleted Successfully", true), HttpStatus.OK);
+		return CommonUtils.createBuildResponse("Hotel Deleted Successfully", "Success", HttpStatus.OK);
 	}
 
 	@GetMapping("/getAllHotel")
-	public ResponseEntity<List<HotelDto>> getAllUsers() {
+	public ResponseEntity<?> getAllUsers() {
 		List<HotelDto> allHotels = this.hotelService.getAllHotel();
-		return new ResponseEntity<>(allHotels, HttpStatus.OK);
+		return CommonUtils.createBuildResponse(allHotels, "Success", HttpStatus.OK);
 	}
 }

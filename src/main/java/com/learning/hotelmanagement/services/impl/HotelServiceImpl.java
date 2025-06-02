@@ -36,9 +36,6 @@ public class HotelServiceImpl implements HotelService {
 	public HotelDto updateHotel(HotelDto hotelDto, Integer hotelId) {
 		Hotel hotel = this.hotelRepo.findById(hotelId)
 				.orElseThrow(() -> new ResourceNotFoundException("Hotel id not exists.. " + hotelId));
-//		hotel.setHotelName(hotelDto.getHotelName());
-//		hotel.setHotelAddress(hotelDto.getHotelAddress());
-//		hotel.setHotelDescription(hotelDto.getHotelDescription());
 		if (hotelDto.getHotelName() != null && !hotelDto.getHotelName().trim().isEmpty()) {
 	        hotel.setHotelName(hotelDto.getHotelName().trim());
 	    }
@@ -60,7 +57,6 @@ public class HotelServiceImpl implements HotelService {
 		Hotel hotel = this.hotelRepo.findById(hotelId)
 				.orElseThrow(() -> new ResourceNotFoundException("Hotel id not exists.. " + hotelId));
 		return this.modelMapper.map(hotel, HotelDto.class);
-
 	}
 
 	@Override
