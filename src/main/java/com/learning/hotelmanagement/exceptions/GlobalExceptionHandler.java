@@ -1,13 +1,14 @@
 package com.learning.hotelmanagement.exceptions;
 
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.validation.FieldError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -19,16 +20,15 @@ import com.learning.hotelmanagement.utils.ErrorResponse;
 public class GlobalExceptionHandler {
 
 	@ExceptionHandler(MethodArgumentNotValidException.class)
-	public ResponseEntity<Map<String, String>> methodArgumentNotValidException(MethodArgumentNotValidException ex) {
-		Map<String, String> response = new LinkedHashMap<>();
+	public ResponseEntity<?> methodArgumentNotValidException(MethodArgumentNotValidException ex) {
+		List<String> al = new LinkedList<>();
 		ex.getBindingResult().getAllErrors().forEach((error) -> {
-			String fieldName = ((FieldError) error).getField();
-			System.out.println(fieldName);
 			String defaultMessage = error.getDefaultMessage();
 			System.out.println(defaultMessage);
-			response.put(fieldName, defaultMessage);
+			al.add(defaultMessage);
 		});
-		return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+		ErrorResponse api = new ErrorResponse(al.get(0), false, HttpStatus.BAD_REQUEST.value());
+		return new ResponseEntity<>(api, HttpStatus.BAD_REQUEST);
 	}
 
 	@ExceptionHandler(HttpRequestMethodNotSupportedException.class)
