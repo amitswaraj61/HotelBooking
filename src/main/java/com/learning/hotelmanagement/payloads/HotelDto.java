@@ -1,11 +1,8 @@
 package com.learning.hotelmanagement.payloads;
 
-import java.util.ArrayList;
-import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.learning.hotelmanagement.entities.Room;
 import com.learning.hotelmanagement.services.ValidationGroup.CreateGroup;
 import com.learning.hotelmanagement.services.ValidationGroup.UpdateGroup;
 

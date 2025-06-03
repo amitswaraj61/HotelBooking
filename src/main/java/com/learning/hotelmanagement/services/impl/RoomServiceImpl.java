@@ -43,11 +43,21 @@ public class RoomServiceImpl implements RoomService {
 	public RoomDto updateRoom(RoomDto roomDto, Integer roomId) {
 		Room room = this.roomRepo.findById(roomId)
 				.orElseThrow(() -> new ResourceNotFoundException("Room id not exists.. " + roomId));
-		room.setPrice(roomDto.getPrice());
-		room.setRoomDescription(roomDto.getRoomDescription());
-		room.setStatus(roomDto.getStatus());
-		room.setRoomNumber(room.getRoomNumber());
-		room.setRoomType(roomDto.getRoomType());
+		if (roomDto.getRoomDescription() != null && !roomDto.getRoomDescription().trim().isEmpty()) {
+			room.setRoomDescription(roomDto.getRoomDescription().trim());
+	    }
+		if (roomDto.getRoomNumber() != null && !roomDto.getRoomNumber().trim().isEmpty()) {
+			room.setRoomNumber(roomDto.getRoomNumber().trim());
+	    }
+		if (roomDto.getPrice() != null) {
+			room.setPrice(roomDto.getPrice());
+	    }
+		if (roomDto.getRoomType() != null) {
+			room.setRoomType(roomDto.getRoomType());
+	    }
+		if (roomDto.getStatus() != null) {
+			room.setStatus(roomDto.getStatus());
+	    }
 		Room updateRoom = this.roomRepo.save(room);
 		return this.modelMapper.map(updateRoom, RoomDto.class);
 	}
