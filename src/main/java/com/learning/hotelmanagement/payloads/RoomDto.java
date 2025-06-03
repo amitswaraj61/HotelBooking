@@ -1,5 +1,6 @@
 package com.learning.hotelmanagement.payloads;
 
+import com.learning.hotelmanagement.entities.Hotel;
 import com.learning.hotelmanagement.entities.RoomStatus;
 import com.learning.hotelmanagement.entities.RoomType;
 
@@ -42,6 +43,6 @@ public class RoomDto {
 	@Schema(example = "string")
 	private RoomType roomType;
 
-//	@Schema(hidden = true)
-//	private HotelDto hotelDto;
+	@Schema(hidden = true)
+	private HotelDto hotel;
 }

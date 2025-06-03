@@ -1,7 +1,11 @@
 package com.learning.hotelmanagement.payloads;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.learning.hotelmanagement.entities.Room;
 import com.learning.hotelmanagement.services.ValidationGroup.CreateGroup;
 import com.learning.hotelmanagement.services.ValidationGroup.UpdateGroup;
 
@@ -33,8 +37,9 @@ public class HotelDto {
 	private String hotelAddress;
 
 	@NotBlank(message = "Hotel Description is required", groups = CreateGroup.class)
-	@Size(min = 10, max = 100, message = "Hotel Description must be between 10 and 100 characters", groups = {
+	@Size(max = 100, message = "Hotel Description must be between 10 and 100 characters", groups = {
 			CreateGroup.class, UpdateGroup.class })
 	@Schema(example = "string")
 	private String hotelDescription;
+	
 }
